@@ -1,4 +1,12 @@
 export default async function handler(req, res) {
+   if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    return res.status(200).end();
+  }
+
+  
   const { number } = req.query; // get number from URL, e.g., /api/proxy/42
   const targetUrl = `https://authsure.in/api/mobile/lookup/${number}`;
 
@@ -20,3 +28,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Server error" });
   }
 }
+
