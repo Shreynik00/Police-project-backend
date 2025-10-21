@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(targetUrl, {
-      method: "GET", 
+      method: "POST", 
       headers: {
         "x-api-key": process.env.AUTHSURE_API_KEY, 
         "Content-Type": "application/json",
@@ -39,4 +39,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Server error", message: err.message });
   }
 }
+
 
