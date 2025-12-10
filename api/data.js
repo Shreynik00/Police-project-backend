@@ -1,19 +1,21 @@
 export default async function handler(req, res) {
-  // ---- CORS FIX ----
+  // --- CORS FIX ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  // Respond to preflight OPTIONS request
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // 👈 IMPORTANT for preflight
+    return res.status(200).end();
   }
-  // -------------------
+  // --- END CORS FIX ---
 
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
   const { identifier, password } = req.body;
+
   const sql = neon(process.env.DATABASE_URL);
 
   try {
@@ -29,9 +31,7 @@ export default async function handler(req, res) {
     const user = users[0];
 
     if (password !== user.password) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid password" });
+      return res.status(401).json({ success: false, message: "Invalid password" });
     }
 
     return res.json({ success: true, message: "Login successful", user });
