@@ -4,8 +4,9 @@
     {
       "src": "/api",
       "methods": ["OPTIONS", "POST"],
-      "dest": "/api/index.js"
+      "dest": "/api/login.js"
     }
   ]
 }
+
 
