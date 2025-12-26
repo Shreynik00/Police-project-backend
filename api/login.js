@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
   // CORS
@@ -44,11 +45,26 @@ export default async function handler(req, res) {
           .status(401)
           .json({ success: false, message: "Invalid password" });
 
+          const JWT_SECRET="";
+          
+         
+    const token = jwt.sign(
+      {
+       
+        email: user.email,
+        username: user.username
+      },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
       return res.json({
         success: true,
         message: "Login successful",
         user,
+        token,
       });
+
+      
     } catch (err) {
       console.error(err);
       return res.status(500).json({ success: false, message: "Server error" });
