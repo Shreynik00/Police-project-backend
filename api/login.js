@@ -3,9 +3,13 @@ import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
   // CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+   // ✅ CORS HEADERS (MUST be first)
+  res.setHeader("Access-Control-Allow-Origin","*", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
 const JWT_SECRET="pp";
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST")
@@ -133,6 +137,7 @@ const JWT_SECRET="pp";
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
 
 
 
