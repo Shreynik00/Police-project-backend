@@ -84,12 +84,19 @@ const JWT_SECRET="pp";
 
   const token = authHeader.split(" ")[1];
 
-  try {
+ try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; // { id, email, username }
-    next(); // continue
+
+    // ✅ Send verified user as RESPONSE DATA
+    return res.status(200).json({
+      success: true,
+      user: decoded,
+    });
   } catch (err) {
-    return res.status(403).json({ message: "Invalid or expired token" });
+    return res.status(403).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
   }
 };
   }
@@ -133,5 +140,6 @@ const JWT_SECRET="pp";
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
 
 
