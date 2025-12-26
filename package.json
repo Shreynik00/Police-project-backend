@@ -4,6 +4,7 @@
   "type": "commonjs",
   "dependencies": {
     "@neondatabase/serverless": "^0.7.1",
+    "jsonwebtoken": "^9.0.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "cors": "^2.8.5",
