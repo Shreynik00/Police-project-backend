@@ -45,7 +45,7 @@ export default async function handler(req, res) {
           .status(401)
           .json({ success: false, message: "Invalid password" });
 
-          const JWT_SECRET="";
+          const JWT_SECRET="pp";
           
          
     const token = jwt.sign(
@@ -111,3 +111,4 @@ export default async function handler(req, res) {
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
