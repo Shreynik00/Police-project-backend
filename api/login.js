@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
+const JWT_SECRET="pp";
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST")
     return res.status(405).json({ message: "Method not allowed" });
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
           .status(401)
           .json({ success: false, message: "Invalid password" });
 
-          const JWT_SECRET="pp";
+          
           
          
     const token = jwt.sign(
@@ -71,6 +71,28 @@ export default async function handler(req, res) {
     }
   }
 
+   
+  if(action ==="verify")
+  {
+    const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  // No token
+  if (!authHeader) {
+    return res.status(401).json({ message: "Token missing" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; // { id, email, username }
+    next(); // continue
+  } catch (err) {
+    return res.status(403).json({ message: "Invalid or expired token" });
+  }
+};
+  }
   /* -----------------------------------------
    * ✅ NUMBER SCAN LOGIC
    * ----------------------------------------- */
@@ -111,5 +133,6 @@ export default async function handler(req, res) {
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
 
 
