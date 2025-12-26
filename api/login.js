@@ -51,8 +51,8 @@ export default async function handler(req, res) {
     const token = jwt.sign(
       {
        
-        email: user.email,
-        username: user.username
+        email: user.email
+      
       },
       JWT_SECRET,
       { expiresIn: "1h" }
@@ -111,4 +111,5 @@ export default async function handler(req, res) {
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
 
