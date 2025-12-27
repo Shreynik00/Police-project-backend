@@ -16,14 +16,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  let body;
+;
   try {
-    body = JSON.parse(req.body);
+   const body = JSON.parse(req.body);
+const token = body.token;
   } catch {
     return res.status(400).json({ success: false, message: "Invalid JSON" });
   }
 
-  const { token } = body;
+ 
 
   if (!token) {
     return res.status(401).json({ success: false, message: "Token missing" });
