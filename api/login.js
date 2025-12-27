@@ -4,8 +4,10 @@ import jwt from "jsonwebtoken";
 export default async function handler(req, res) {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  
 const JWT_SECRET="pp";
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST")
@@ -74,20 +76,19 @@ const JWT_SECRET="pp";
    
   if(action ==="verify")
   {
-    const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+    const { token } = req.body;
 
-  // No token
-  if (!authHeader) {
-    return res.status(401).json({ message: "Token missing" });
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Token missing",
+    });
   }
 
-  const token = authHeader.split(" ")[1];
-
- try {
+  try {
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // ✅ Send verified user as RESPONSE DATA
+    // ✅ Return DATA in body (as you wanted)
     return res.status(200).json({
       success: true,
       user: decoded,
@@ -140,6 +141,7 @@ const JWT_SECRET="pp";
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
 
 
 
