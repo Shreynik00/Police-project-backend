@@ -15,20 +15,21 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
-
-;
-  try {
-   const body = JSON.parse(req.body);
-const token = body.token;
-  } catch {
-    return res.status(400).json({ success: false, message: "Invalid JSON" });
-  }
-
- 
+ // ✅ BODY IS RAW STRING TOKEN
+  const token =
+    typeof req.body === "string"
+      ? req.body.trim()
+      : null;
 
   if (!token) {
-    return res.status(401).json({ success: false, message: "Token missing" });
+    return res.status(401).json({
+      success: false,
+      message: "Token missing"
+    });
   }
+ 
+
+ 
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
