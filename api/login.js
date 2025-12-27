@@ -1,6 +1,10 @@
 import { neon } from "@neondatabase/serverless";
 import jwt from "jsonwebtoken";
 
+  // ✅ CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
 const JWT_SECRET = "pp"; // ⚠️ move to env in production
 
@@ -142,6 +146,7 @@ export default async function handler(req, res) {
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
 
 
 
