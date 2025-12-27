@@ -16,11 +16,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  // ✅ BODY IS RAW STRING TOKEN
-  const token =
-    typeof req.body === "string"
-      ? req.body.trim()
-      : null;
+  let token;
+
+  try {
+    const body =
+      typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body;
+
+    token = body.token;
+  } catch {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid JSON"
+    });
+  }
 
   if (!token) {
     return res.status(401).json({
@@ -35,7 +45,7 @@ export default async function handler(req, res) {
       success: true,
       user: decoded
     });
-  } catch (err) {
+  } catch {
     return res.status(403).json({
       success: false,
       message: "Invalid token"
