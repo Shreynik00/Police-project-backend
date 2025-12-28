@@ -22,12 +22,14 @@ export default async function handler(req, res) {
 
   // Parse incoming request body
   try {
-    const body =
-      typeof req.body === "string"
-        ? JSON.parse(req.body)
-        : req.body;
+   const { number } = req.body;
 
-    idNumber = body.id_number;
+    if (!number)
+      return res
+        .status(400)
+        .json({ success: false, message: "Number required" });
+
+    idNumber = number;
   } catch {
     return res.status(400).json({
       success: false,
