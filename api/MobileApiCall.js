@@ -1,4 +1,4 @@
-const EXTERNAL_API_URL = "https://authsure.in/api/verification/aadhar";
+const EXTERNAL_API_URL = "https://authsure.in/api/mobile/mobile-lookup-v2";
 const API_KEY = "ak_72k1b6b3t5n406st2s3j691d"; // move to env later
 
 export default async function handler(req, res) {
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
         "x-api-key": API_KEY
       },
       body: JSON.stringify({
-        id_number: idNumber
+        mobileNumber: idNumber
       })
     });
 
