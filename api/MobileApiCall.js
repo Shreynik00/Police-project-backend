@@ -1,5 +1,5 @@
 const EXTERNAL_API_URL = "https://authsure.in/api/mobile/mobile-lookup-v2";
-const API_KEY = "ak_72k1b6b3t5n406st2s3j691d"; // move to env later
+const API_KEY = "ak_3z2p6bm6k6r17364z1h1k3m1"; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
