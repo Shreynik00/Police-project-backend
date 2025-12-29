@@ -20,8 +20,12 @@ export  default  async function Handler( req ,res)
 }
 
     try{
-        const { username } = req.body;
+        const body =
+      typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body ?? {};
 
+         const { username } = body;
         if(!username)
         {
             return res.status(400).json({message :"username is required"});
