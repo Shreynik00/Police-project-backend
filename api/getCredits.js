@@ -36,6 +36,8 @@ export  default  async function Handler( req ,res)
           .json({ success: false, message: "User not found" });
 
           return res.status(200).json({ credit:credit[0].credits});
+console.log("BODY:", req.body);
+console.log("DB URL:", process.env.DATABASE_URL);
 
     }
     
