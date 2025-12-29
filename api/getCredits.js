@@ -26,7 +26,7 @@ export  default  async function Handler( req ,res)
         {
             return res.status(400).json({message :"username is required"});
         }
-        const sql = neon(process.env.DATABASE_URL);
+         const sql = neon(process.env.DATABASE_URL);
         const credit = await sql` 
         SELECT  credits FROM users WHERE username = ${username}`
 
