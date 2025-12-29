@@ -38,12 +38,7 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!idNumber) {
-    return res.status(400).json({
-      success: false,
-      message: "id_number missing"
-    });
-  }
+
 
   // Call external API with required body format
   try {
@@ -51,10 +46,10 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": API_KEY
+        "X-API-Key": API_KEY
       },
       body: JSON.stringify({
-        panNumber: idNumber
+        panNumber: panNumber
       })
     });
 
