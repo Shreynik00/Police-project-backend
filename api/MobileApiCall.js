@@ -1,5 +1,5 @@
 const EXTERNAL_API_URL = "https://authsure.in/api/verification/pan";
-const API_KEY = "ak_6s6960ips4135e512y5a1i3o"; // move to env later
+const API_KEY = "https://authsure.in/api/verification/pan"; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         .status(400)
         .json({ success: false, message: "Number required" });
 
-    panNumber = number;
+    idNumber = number;
   } catch {
     return res.status(400).json({
       success: false,
@@ -38,7 +38,12 @@ export default async function handler(req, res) {
     });
   }
 
-
+  if (!idNumber) {
+    return res.status(400).json({
+      success: false,
+      message: "id_number missing"
+    });
+  }
 
   // Call external API with required body format
   try {
@@ -46,10 +51,10 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": API_KEY
+        "x-api-key": API_KEY
       },
       body: JSON.stringify({
-        panNumber: panNumber
+        panNumber: idNumber
       })
     });
 
@@ -68,4 +73,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
