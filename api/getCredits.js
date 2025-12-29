@@ -1,41 +1,52 @@
-import { neon } from "@neondatabase/serverless";
+import { neon } from "@neondatabase/serverless"
 
-export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
-  res.setHeader("Access-Control-Max-Age", "86400");
+export  default  async function handler( req ,res)
+{
+    //CORS
+    res.setHeader("Access-Control-Allow-Origin","*");
+    res.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers","Content-Type,Authorization");
+      res.setHeader("Access-Control-Max-Age", "86400");
+    
+    //prefligth request handler
+    if(req.method == "OPTIONS")
+    {
+        return res.status(200).end();
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
-  try {
-    let body = req.body;
-    if (typeof req.body === "string") {
-      body = JSON.parse(req.body);
-    } else if (!req.body) {
-      return res.status(400).json({ message: "No body provided" });
     }
+    if(req.method !== "POST")
+{
+  return res.status(405).json({message :"method not Allowed"});
+}
 
-    const { username } = body;
-    if (!username) {
-      return res.status(400).json({ message: "username is required" });
+    try{
+        const body =
+      typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body ?? {};
+
+         const { username } = body;
+        if(!username)
+        {
+            return res.status(400).json({message :"username is required"});
+        }
+         const sql = neon(process.env.DATABASE_URL);
+        const credit = await sql` 
+        SELECT  credits FROM users WHERE username = ${username}`;
+
+          if (credit.length === 0)
+        return res
+          .status(401)
+          .json({ success: false, message: "User not found" });
+
+          return res.status(200).json({ credit:credit[0].credits});
+
+
     }
-
-    const sql = neon(process.env.DATABASE_URL);
-    const credit = await sql`SELECT credits FROM users WHERE username = ${username}`;
-
-    if (credit.length === 0) {
-      return res.status(401).json({ success: false, message: "User not found" });
+    
+    catch(error)
+    {
+        console.error("Error fetching credits:",error);
+        return res.status(500).json({message :"Internal Server Error"});
     }
-
-    return res.status(200).json({ credit: credit[0].credits });
-  } catch (error) {
-    console.error("Error fetching credits:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
-  }
 }
