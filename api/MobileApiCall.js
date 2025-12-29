@@ -1,5 +1,5 @@
-const EXTERNAL_API_URL = "https://authsure.in/api/verification/pan";
-const API_KEY = "ak_6s6960ips4135e512y5a1i3o"; // move to env later
+const EXTERNAL_API_URL = "https://authsure.in/api/mobile/mobile-lookup-v2";
+const API_KEY = "ak_3z2p6bm6k6r17364z1h1k3m1"; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
         "x-api-key": API_KEY
       },
       body: JSON.stringify({
-        panNumber: idNumber
+        mobileNumber: idNumber
       })
     });
 
