@@ -1,4 +1,4 @@
-import neon from "@neondatanase/serverless"
+import neon from "@neondatabase/serverless"
 
 export  default  async function Handler( req ,res)
 {
@@ -9,7 +9,7 @@ export  default  async function Handler( req ,res)
       res.setHeader("Access-Control-Max-Age", "86400");
     
     //prefligth request handler
-    if(req.method == "OPTIONs")
+    if(req.method == "OPTIONS")
     {
         return res.status(200).end();
 
@@ -26,7 +26,7 @@ export  default  async function Handler( req ,res)
         {
             return res.status(400).json({message :"username is required"});
         }
-        const sqldb = neon(process.env.DTABASR_URL);
+        const sql = neon(process.env.DATABASE_URL);
         const credit = await sql` 
         SELECT  credits FROM users WHERE username = ${username}`
 
