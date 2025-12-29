@@ -6,6 +6,7 @@ export  default  async function Handler( req ,res)
     res.setHeader("Access Control-Allow-Origin","*");
     res.setHeader("Access Control-Allow-Methods","POST,GET,OPTIONS");
     res.setHeader("Access Control-Allow-Headers","Content-Type , Autthorization");
+      res.setHeader("Access-Control-Max-Age", "86400");
     
     //prefligth request handler
     if(req.method == "OPTION")
