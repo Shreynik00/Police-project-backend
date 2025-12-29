@@ -1,6 +1,6 @@
 import neon from "@neondatabase/serverless"
 
-export  default  async function Handler( req ,res)
+export  default  async function handler( req ,res)
 {
     //CORS
     res.setHeader("Access-Control-Allow-Origin","*");
