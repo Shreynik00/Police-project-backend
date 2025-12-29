@@ -26,7 +26,7 @@ export  default  async function Handler( req ,res)
         {
             return res.status(400).json({message :"username is required"});
         }
-         const sql = neon(process.env.DATABASE_URL);
+         const sql = neon("postgresql://neondb_owner:npg_1CFxm7vGIiUf@ep-patient-silence-ah227aku-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require");
         const credit = await sql` 
         SELECT  credits FROM users WHERE username = ${username}`
 
