@@ -9,15 +9,16 @@ export  default  async function Handler( req ,res)
       res.setHeader("Access-Control-Max-Age", "86400");
     
     //prefligth request handler
-    if(req.method == "OPTION")
+    if(req.method == "OPTIONs")
     {
         return res.status(200).end();
 
     }
-      if(req.method == "POST")
-    {
-        return res.status(404).json({message :"method not Allowed"});
-    }
+    if(req.method == "POST")
+{
+  return res.status(404).json({message :"method not Allowed"});
+}
+
     try{
         const { username } = req.body;
 
