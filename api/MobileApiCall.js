@@ -68,11 +68,11 @@ export default async function handler(req, res) {
     const user = users[0];
 
     /* ===== 2️⃣ CHECK CREDITS ===== */
-    if (user.credit < 200) {
+    if (user.credits < 200) {
       return res.status(400).json({
         success: false,
         message: "Insufficient credits",
-        availableCredits: user.credit,
+        availableCredits: user.credits,
       });
     }
     
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
 
     const data = await apiResponse.json();
 
-   const remainingCredits = user.credit - 200;
+   const remainingCredits = user.credits - 200;
 
     await sql`
       UPDATE users
@@ -101,7 +101,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: "Scan successful",
-      remainingCredits,
+     
       data,
     });
 
