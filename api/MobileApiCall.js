@@ -1,3 +1,5 @@
+import { neon } from "@neondatabase/serverless";
+
 const EXTERNAL_API_URL = "https://authsure.in/api/mobile/mobile-lookup-v2";
 const API_KEY = "ak_3z2p6bm6k6r17364z1h1k3m1"; // move to env later
 
@@ -23,7 +25,8 @@ export default async function handler(req, res) {
 
   // Parse incoming request body
   try {
-   const { number } = req.body;
+      const sql = neon(process.env.DATABASE_URL);
+   const { number ,username} = req.body;
 
     if (!number)
       return res
@@ -47,6 +50,32 @@ export default async function handler(req, res) {
 
   // Call external API with required body format
   try {
+
+      /* ===== 1️⃣ FETCH USER BY USERNAME ===== */
+    const users = await sql`
+      SELECT username, credits
+      FROM users
+      WHERE username = ${username}
+    `;
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const user = users[0];
+
+    /* ===== 2️⃣ CHECK CREDITS ===== */
+    if (user.credit < 200) {
+      return res.status(400).json({
+        success: false,
+        message: "Insufficient credits",
+        availableCredits: user.credit,
+      });
+    }
+    
     const apiResponse = await fetch(EXTERNAL_API_URL, {
       method: "POST",
       headers: {
@@ -60,9 +89,20 @@ export default async function handler(req, res) {
 
     const data = await apiResponse.json();
 
+   const remainingCredits = user.credit - 200;
+
+    await sql`
+      UPDATE users
+      SET credits = ${remainingCredits}
+      WHERE username = ${username}
+    `;
+
+    /* ===== 5️⃣ SUCCESS RESPONSE ===== */
     return res.status(200).json({
       success: true,
-      data
+      message: "Scan successful",
+      remainingCredits,
+      data,
     });
 
   } catch (error) {
