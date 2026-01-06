@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         "x-api-key": API_KEY,
       },
       body: JSON.stringify({
-        panNumber: idNumber,
+        id_number: idNumber,
       }),
     });
 
