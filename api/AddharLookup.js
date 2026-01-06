@@ -68,7 +68,7 @@ export default async function handler(req, res) {
     const user = users[0];
 
     /* 2️⃣ CHECK CREDITS */
-    if (user.credits < 200) {
+    if (user.credits < 10) {
       return res.status(400).json({
         success: false,
         message: "Insufficient credits",
@@ -91,7 +91,7 @@ export default async function handler(req, res) {
     const data = await apiResponse.json();
 
     /* 4️⃣ SUBTRACT CREDITS */
-    const remainingCredits = user.credits - 200;
+    const remainingCredits = user.credits - 10;
 
     await sql`
       UPDATE users
