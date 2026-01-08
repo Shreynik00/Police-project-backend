@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 
-const EXTERNAL_API_URL = "https://authsure.in/api/mobile/mobile-lookup-v2";
-const API_KEY = "ak_3z2p6bm6k6r17364z1h1k3m1"; // move to env later
+const EXTERNAL_API_URL = process.env.Mobile_URL;
+const API_KEY = process.env.Mobile_KEY; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
