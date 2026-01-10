@@ -2,7 +2,7 @@
 import { neon } from "@neondatabase/serverless";
 
 
-const API_KEY = "ak_282u503cz3p506u6f12d595g"; // move to env later
+const API_KEY =process.env.Vechile_KEY; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
