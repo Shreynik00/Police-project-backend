@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "pp"; // move to env later
+const JWT_SECRET = process.env.JWT_SECRET; // move to env later
 
 export default async function handler(req, res) {
   
