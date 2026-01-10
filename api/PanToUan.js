@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 
-const EXTERNAL_API_URL = "https://authsure.in/api/pan/pan-to-uan";
-const API_KEY = "ak_5k3v1a5g2f6r276q3n2q553b"; // move to env later
+const EXTERNAL_API_URL =process.env.NEXT_URL_MobileToUan_URL;
+const API_KEY =process.env.NEXT_URL_MobileToUan_KEY; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
