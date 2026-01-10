@@ -2,7 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import jwt from "jsonwebtoken";
 
 
-const JWT_SECRET = "pp"; // ⚠️ move to env in production
+const JWT_SECRET =process.env.JWT_SECRET; // ⚠️ move to env in production
 
 export default async function handler(req, res) {
   // ✅ CORS
@@ -146,6 +146,7 @@ export default async function handler(req, res) {
     .status(400)
     .json({ success: false, message: "Invalid action" });
 }
+
 
 
 
