@@ -1,8 +1,8 @@
 
 import { neon } from "@neondatabase/serverless";
 
-const EXTERNAL_API_URL = "https://authsure.in/api/cibil/experian-pdf-api";
-const API_KEY = "ak_5s321s3731a244r3c1u4z5j2"; // move to env later
+const EXTERNAL_API_URL =process.env.NEXT_PUBLIC_Experian_URL;
+const API_KEY = process.env.NEXT_PUBLIC_Experian_KEY; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
