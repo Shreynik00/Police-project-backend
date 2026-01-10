@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 
-const EXTERNAL_API_URL = "https://authsure.in/api/verification/aadhar";
-const API_KEY = "ak_72k1b6b3t5n406st2s3j691d"; // move to env later
+const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_Addhar_URL;
+const API_KEY =process.env.NEXT_PUBLIC_Addhar_KEY ; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
