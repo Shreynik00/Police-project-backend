@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 
-const EXTERNAL_API_URL = "https://authsure.in/api/pan/pan-to-gst";
-const API_KEY = "ak_171j56175x4b3l3i2a2144l4"; // move to env later
+const EXTERNAL_API_URL =prcoess.env.MobileToGst_URL;
+const API_KEY =process.env.MobileToGst_KEY; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
