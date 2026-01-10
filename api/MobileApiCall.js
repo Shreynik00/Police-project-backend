@@ -3,6 +3,7 @@ import { neon } from "@neondatabase/serverless";
 const EXTERNAL_API_URL = process.env.Mobile_URL;
 const API_KEY = process.env.Mobile_KEY; // move to env later
 
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
