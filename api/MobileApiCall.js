@@ -1,6 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 
 const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_Mobile_URL;
+
 const API_KEY = process.env.NEXT_PUBLIC_Mobile_KEY; // move to env later
 
 
