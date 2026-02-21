@@ -22,14 +22,14 @@ export default async function handler(req, res) {
 
   const sql = neon(process.env.DATABASE_URL);
 
-  let idNumber;
+  let id;
   let username;
 
   /* ===== PARSE REQUEST ===== */
   try {
-    ({ number: idNumber, username } = req.body);
+    ({ number: id, username } = req.body);
 
-    if (!idNumber) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Number required",
@@ -88,23 +88,9 @@ export default async function handler(req, res) {
       }),
     });*/
 
-      try {
-    ({ id } = req.body);
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "ID is required",
-      });
-    }
-
-  } catch {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid JSON",
-    });
-  }
-    
+  
+    const BASE_API_URL="http://65.21.178.173:3000/api";
+    const API_KEY="PrajapatiRAVAn";
      try {
     const apiUrl = `${BASE_API_URL}?key=${API_KEY}&id=${id}`;
 
