@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== "POST") {
+  if (req.method !== "POST" || "GET") {
     return res.status(405).json({
       success: false,
       message: "Method not allowed",
@@ -94,16 +94,9 @@ export default async function handler(req, res) {
      try {
     const apiUrl = `${BASE_API_URL}?key=${API_KEY}&id=${id}`;
 
-    const apiResponse = await fetch(apiUrl, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    
-  },
-  body: JSON.stringify({
-   
-  }),
-});
+      const apiResponse = await fetch(apiUrl, {
+    method: "GET"
+  });
     const data = await apiResponse.json();
 
     return res.status(200).json({
