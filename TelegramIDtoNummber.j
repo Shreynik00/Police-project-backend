@@ -76,7 +76,7 @@ export default async function handler(req, res) {
       });
     }
 
-    /* 3️⃣ CALL EXTERNAL API */
+    /* 3️⃣ CALL EXTERNAL API
     const apiResponse = await fetch(EXTERNAL_API_URL, {
       method: "POST",
       headers: {
@@ -86,7 +86,44 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         panNumber: idNumber,
       }),
+    });*/
+
+      try {
+    ({ id } = req.body);
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "ID is required",
+      });
+    }
+
+  } catch {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid JSON",
     });
+  }
+    
+     try {
+    const apiUrl = `${BASE_API_URL}?key=${API_KEY}&id=${id}`;
+
+    const apiesponse = await fetch(apiUrl);
+    const data = await response.json();
+
+    return res.status(200).json({
+      success: true,
+      message: "Data fetched successfully",
+      data,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "External API call failed",
+      error: error.message,
+    });
+  }
 
     const data = await apiResponse.json();
 
