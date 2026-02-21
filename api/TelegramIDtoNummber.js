@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 
-const EXTERNAL_API_URL =prcoess.env.MobileToGst_URL;
+const EXTERNAL_API_URL =process.env.MobileToGst_URL;
 const API_KEY =process.env.MobileToGst_KEY; // move to env later
 
 export default async function handler(req, res) {
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== "POST" || "GET") {
+  if (req.method !== "POST" && req.method !== "GET") { {
     return res.status(405).json({
       success: false,
       message: "Method not allowed",
@@ -97,13 +97,9 @@ export default async function handler(req, res) {
       const apiResponse = await fetch(apiUrl, {
     method: "GET"
   });
-    const data = await apiResponse.json();
+    
 
-    return res.status(200).json({
-      success: true,
-      message: "Data fetched successfully",
-      data,
-    });
+ 
 
   } catch (error) {
     return res.status(500).json({
