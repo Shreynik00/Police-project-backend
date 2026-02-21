@@ -94,7 +94,16 @@ export default async function handler(req, res) {
      try {
     const apiUrl = `${BASE_API_URL}?key=${API_KEY}&id=${id}`;
 
-    const apiesponse = await fetch(apiUrl);
+    const apiResponse = await fetch(apiURL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    
+  },
+  body: JSON.stringify({
+   
+  }),
+});
     const data = await response.json();
 
     return res.status(200).json({
