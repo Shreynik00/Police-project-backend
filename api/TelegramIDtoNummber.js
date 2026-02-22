@@ -94,7 +94,7 @@ export default async function handler(req, res) {
      try {
     const apiUrl = `${BASE_API_URL}?key=${API_KEY}&id=${id}`;
 
-      const apiResponse = await fetch(apiUrl, {
+      let apiResponse = await fetch(apiUrl, {
     method: "GET"
   });
     
