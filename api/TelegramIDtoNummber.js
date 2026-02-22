@@ -91,7 +91,7 @@ export default async function handler(req, res) {
   
     const BASE_API_URL="http://65.21.178.173:3000/api";
     const API_KEY="PrajapatiRAVAn";
-     try {
+     
     const apiUrl = `${BASE_API_URL}?key=${API_KEY}&id=${id}`;
 
       let apiResponse = await fetch(apiUrl, {
@@ -101,13 +101,7 @@ export default async function handler(req, res) {
 
  
 
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "External API call failed",
-      error: error.message,
-    });
-  }
+ 
 
     const data = await apiResponse.json();
 
