@@ -4,7 +4,7 @@ const EXTERNAL_API_URL =process.env.MobileToGst_URL;
 const API_KEY =process.env.MobileToGst_KEY; // move to env later
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "https://api-six-lilac-96.vercel.app");
   res.setHeader("Access-Control-Allow-Methods", "POST,GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Max-Age", "86400");
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== "POST" && req.method !== "GET") { {
+  if (req.method !== "POST" && req.method !== "GET") { 
     return res.status(405).json({
       success: false,
       message: "Method not allowed",
