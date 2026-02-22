@@ -5,6 +5,7 @@ const API_KEY =process.env.MobileToGst_KEY; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "https://api-six-lilac-96.vercel.app");
+  
   res.setHeader("Access-Control-Allow-Methods", "POST,GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Max-Age", "86400");
