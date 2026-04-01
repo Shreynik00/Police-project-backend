@@ -1,9 +1,8 @@
 import { neon } from "@neondatabase/serverless";
 
-const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_Mobile_URL;
-
-const API_KEY = process.env.NEXT_PUBLIC_Mobile_KEY; // move to env later
-
+const LEAK_OSINT_URL = "https://leakosintapi.com/";
+const LEAK_OSINT_TOKEN = "8745529260:KVpZweQH"; // move to env later
+const CREDIT_COST = 90;
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -11,9 +10,7 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Max-Age", "86400");
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+  if (req.method === "OPTIONS") return res.status(200).end();
 
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -24,36 +21,32 @@ export default async function handler(req, res) {
 
   const sql = neon(process.env.DATABASE_URL);
 
-  let idNumber;
+  let number;
   let username;
 
   /* ===== PARSE REQUEST ===== */
   try {
-    ({ number: idNumber, username } = req.body);
+    ({ number, username } = req.body);
 
-    if (!idNumber) {
-      return res.status(400).json({
-        success: false,
-        message: "Number required",
-      });
+    if (!number) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Number required" });
     }
 
     if (!username) {
-      return res.status(400).json({
-        success: false,
-        message: "Username required",
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "Username required" });
     }
   } catch {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid JSON",
-    });
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid JSON" });
   }
 
-  /* ===== MAIN FLOW ===== */
   try {
-    /* 1️⃣ FETCH USER BY USERNAME */
+    /* 1️⃣ FETCH USER */
     const users = await sql`
       SELECT username, credits
       FROM users
@@ -61,16 +54,15 @@ export default async function handler(req, res) {
     `;
 
     if (users.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     const user = users[0];
 
     /* 2️⃣ CHECK CREDITS */
-    if (user.credits < 200) {
+    if (user.credits < CREDIT_COST) {
       return res.status(400).json({
         success: false,
         message: "Insufficient credits",
@@ -78,22 +70,26 @@ export default async function handler(req, res) {
       });
     }
 
-    /* 3️⃣ CALL EXTERNAL API */
-    const apiResponse = await fetch(EXTERNAL_API_URL, {
+    /* 3️⃣ CALL LEAK OSINT API (REPLACED PART ✅) */
+    const response = await fetch(LEAK_OSINT_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": API_KEY,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        mobileNumber: idNumber,
+        token: LEAK_OSINT_TOKEN,
+        request: number,
+        limit: 100,
+        lang: "en",
       }),
     });
 
-    const data = await apiResponse.json();
+    if (!response.ok) {
+      throw new Error(`LeakOSINT API error: ${response.status}`);
+    }
 
-    /* 4️⃣ SUBTRACT CREDITS */
-    const remainingCredits = user.credits - 200;
+    const data = await response.json();
+
+    /* 4️⃣ DEDUCT CREDITS */
+    const remainingCredits = user.credits - CREDIT_COST;
 
     await sql`
       UPDATE users
@@ -101,13 +97,15 @@ export default async function handler(req, res) {
       WHERE username = ${username}
     `;
 
-    /* 5️⃣ SEND RESPONSE */
+    /* 5️⃣ SUCCESS RESPONSE */
     return res.status(200).json({
       success: true,
       message: "Scan successful",
       data,
+      remainingCredits,
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({
       success: false,
       message: "External API call failed",
