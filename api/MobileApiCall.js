@@ -91,7 +91,7 @@ const { number, username } = req.body; // Changed idNumber back to number to mat
       }),
     });
 
-    const data = await apiResponse.json();
+    const data = await response.json();
 
     /* 4️⃣ SUBTRACT CREDITS */
     const remainingCredits = user.credits - 200;
