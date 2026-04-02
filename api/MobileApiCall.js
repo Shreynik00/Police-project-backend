@@ -6,8 +6,8 @@ const LEAK_OSINT_URL = "https://leakosintapi.com/";
 const LEAK_OSINT_TOKEN = "8745529260:KVpZweQH"; // move to env later
 const CREDIT_COST = 90;
 
-
 export default async function handler(req, res) {
+  // ✅ CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -26,35 +26,39 @@ export default async function handler(req, res) {
 
   const sql = neon(process.env.DATABASE_URL);
 
-
-let number, username;
   /* ===== PARSE REQUEST ===== */
+  let number, username;
+
   try {
- { number, username } = req.body; // Changed idNumber back to number to match the rest of your logic
+    // ✅ FIX: assign outside scope
+    ({ number, username } = req.body);
 
-    if (!number) {
-      return res.status(400).json({
-        success: false,
-        message: "Number required",
-      });
-    }
-
-    if (!username) {
-      return res.status(400).json({
-        success: false,
-        message: "Username required",
-      });
-    }
-  } catch {
+    console.log("Incoming body:", req.body);
+  } catch (err) {
     return res.status(400).json({
       success: false,
       message: "Invalid JSON",
     });
   }
 
+  // ✅ VALIDATION
+  if (!number) {
+    return res.status(400).json({
+      success: false,
+      message: "Number required",
+    });
+  }
+
+  if (!username) {
+    return res.status(400).json({
+      success: false,
+      message: "Username required",
+    });
+  }
+
   /* ===== MAIN FLOW ===== */
   try {
-    /* 1️⃣ FETCH USER BY USERNAME */
+    /* 1️⃣ FETCH USER */
     const users = await sql`
       SELECT username, credits
       FROM users
@@ -79,10 +83,12 @@ let number, username;
       });
     }
 
-  /* 3️⃣ CALL LEAK OSINT API (REPLACED PART ✅) */
+    /* 3️⃣ CALL EXTERNAL API */
     const response = await fetch(LEAK_OSINT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         token: LEAK_OSINT_TOKEN,
         request: number,
@@ -93,7 +99,7 @@ let number, username;
 
     const data = await response.json();
 
-    /* 4️⃣ SUBTRACT CREDITS */
+    /* 4️⃣ UPDATE CREDITS */
     const remainingCredits = user.credits - 200;
 
     await sql`
@@ -102,13 +108,17 @@ let number, username;
       WHERE username = ${username}
     `;
 
-    /* 5️⃣ SEND RESPONSE */
+    /* 5️⃣ RESPONSE */
     return res.status(200).json({
       success: true,
       message: "Scan successful",
       data,
+      remainingCredits,
     });
+
   } catch (error) {
+    console.error("ERROR:", error);
+
     return res.status(500).json({
       success: false,
       message: "External API call failed",
