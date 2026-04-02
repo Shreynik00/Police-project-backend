@@ -27,10 +27,10 @@ export default async function handler(req, res) {
   const sql = neon(process.env.DATABASE_URL);
 
 
-
+let number, username;
   /* ===== PARSE REQUEST ===== */
   try {
-const { number, username } = req.body; // Changed idNumber back to number to match the rest of your logic
+ { number, username } = req.body; // Changed idNumber back to number to match the rest of your logic
 
     if (!number) {
       return res.status(400).json({
