@@ -1,0 +1,128 @@
+import { neon } from "@neondatabase/serverless";
+
+const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_Mobile_URL;
+
+const LEAK_OSINT_URL = "https://leakosintapi.com/";
+const LEAK_OSINT_TOKEN = "8745529260:KVpZweQH"; // move to env later
+const CREDIT_COST = 90;
+
+export default async function handler(req, res) {
+  // ✅ CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Max-Age", "86400");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      message: "Method not allowed",
+    });
+  }
+
+  const sql = neon(process.env.DATABASE_URL);
+
+  /* ===== PARSE REQUEST ===== */
+  let number, username;
+
+  try {
+    // ✅ FIX: assign outside scope
+    ({ number, username } = req.body);
+
+    console.log("Incoming body:", req.body);
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid JSON",
+    });
+  }
+
+  // ✅ VALIDATION
+  if (!number) {
+    return res.status(400).json({
+      success: false,
+      message: "Number required",
+    });
+  }
+
+  if (!username) {
+    return res.status(400).json({
+      success: false,
+      message: "Username required",
+    });
+  }
+
+  /* ===== MAIN FLOW ===== */
+  try {
+    /* 1️⃣ FETCH USER */
+    const users = await sql`
+      SELECT username, credits
+      FROM users
+      WHERE username = ${username}
+    `;
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const user = users[0];
+
+    /* 2️⃣ CHECK CREDITS */
+    if (user.credits < 200) {
+      return res.status(400).json({
+        success: false,
+        message: "Insufficient credits",
+        availableCredits: user.credits,
+      });
+    }
+
+    /* 3️⃣ CALL EXTERNAL API */
+    const response = await fetch(LEAK_OSINT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: LEAK_OSINT_TOKEN,
+        request: number,
+        limit: 100,
+        lang: "en",
+      }),
+    });
+
+    const data = await response.json();
+
+    /* 4️⃣ UPDATE CREDITS */
+    const remainingCredits = user.credits - 200;
+
+    await sql`
+      UPDATE users
+      SET credits = ${remainingCredits}
+      WHERE username = ${username}
+    `;
+
+    /* 5️⃣ RESPONSE */
+    return res.status(200).json({
+      success: true,
+      message: "Scan successful",
+      data,
+      remainingCredits,
+    });
+
+  } catch (error) {
+    console.error("ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "External API call failed",
+      error: error.message,
+    });
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api",
+      "methods": ["OPTIONS", "POST"],
+      "dest": "/api/login.js"
+    }
+  ]
+}
+
