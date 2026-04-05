@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ success: false, message: "Method not allowed" });
   }
-  const GEMINI_KEY = AIzaSyCVCJgZ6UcgbrNwJrnFS6ky5VEvvTr6q0E;
+
   try {
     const { data, target } = req.body;
 
