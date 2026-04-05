@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import { neon } from "@neondatabase/serverless";
 import jwt from "jsonwebtoken";
 
