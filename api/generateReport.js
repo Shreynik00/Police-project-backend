@@ -16,11 +16,11 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ success: false, message: "Method not allowed" });
   }
-  
+  const GEMINI_KEY = AIzaSyCVCJgZ6UcgbrNwJrnFS6ky5VEvvTr6q0E;
   try {
     const { data, target } = req.body;
 
-    const genAI = new GoogleGenerativeAI(AIzaSyCVCJgZ6UcgbrNwJrnFS6ky5VEvvTr6q0E);
+    const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
     const model = genAI.getGenerativeModel({
       model:  "gemini-1.5-flash",
@@ -54,7 +54,7 @@ ${JSON.stringify(data, null, 2)}
 `;
 
     const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const response =  result.response;
 
     const text = response.text();
 
