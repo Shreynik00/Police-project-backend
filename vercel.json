@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "version": 2,
   "routes": [
@@ -9,3 +10,16 @@
   ]
 }
 
+=======
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api",
+      "methods": ["OPTIONS", "POST"],
+      "dest": "/api/login.js"
+    }
+  ]
+}
+
+>>>>>>> 00de4bc705a789cc50438442075e2614f73667c0
