@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   try {
     const { data, target } = req.body;
 
-    const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 
     const model = genAI.getGenerativeModel({
       model:  "gemini-1.5-flash",
