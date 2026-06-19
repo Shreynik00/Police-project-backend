@@ -1,17 +1,12 @@
 import { neon } from "@neondatabase/serverless";
+import jwt from "jsonwebtoken";
 
-const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_Mobile_URL;
-
-const LEAK_OSINT_URL = "https://leakosintapi.com/";
-const LEAK_OSINT_TOKEN = "8745529260:KVpZweQH"; // move to env later
-const CREDIT_COST = 90;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export default async function handler(req, res) {
-  // ✅ CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Max-Age", "86400");
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
@@ -24,105 +19,98 @@ export default async function handler(req, res) {
     });
   }
 
-  const sql = neon(process.env.DATABASE_URL);
+  const { action } = req.body;
 
-  /* ===== PARSE REQUEST ===== */
-  let number, username;
+  /* -------------------------------
+     VERIFY TOKEN
+  -------------------------------- */
+  if (action === "verify") {
+    const { token } = req.body;
 
-  try {
-    // ✅ FIX: assign outside scope
-    ({ number, username } = req.body);
-
-    console.log("Incoming body:", req.body);
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid JSON",
-    });
-  }
-
-  // ✅ VALIDATION
-  if (!number) {
-    return res.status(400).json({
-      success: false,
-      message: "Number required",
-    });
-  }
-
-  if (!username) {
-    return res.status(400).json({
-      success: false,
-      message: "Username required",
-    });
-  }
-
-  /* ===== MAIN FLOW ===== */
-  try {
-    /* 1️⃣ FETCH USER */
-    const users = await sql`
-      SELECT username, credits
-      FROM users
-      WHERE username = ${username}
-    `;
-
-    if (users.length === 0) {
-      return res.status(404).json({
+    if (!token) {
+      return res.status(401).json({
         success: false,
-        message: "User not found",
+        message: "Token missing",
       });
     }
 
-    const user = users[0];
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
 
-    /* 2️⃣ CHECK CREDITS */
-    if (user.credits < 200) {
-      return res.status(400).json({
+      return res.json({
+        success: true,
+        user: decoded,
+      });
+    } catch (err) {
+      return res.status(403).json({
         success: false,
-        message: "Insufficient credits",
-        availableCredits: user.credits,
+        message: "Invalid token",
+      });
+    }
+  }
+
+  /* -------------------------------
+     ADD EQUIPMENT
+  -------------------------------- */
+  if (action === "addEquipment") {
+    const {
+      token,
+      machineId,
+      name,
+      department,
+      installDate,
+      lastMaintDate,
+      maintInterval,
+    } = req.body;
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Token missing",
       });
     }
 
-    /* 3️⃣ CALL EXTERNAL API */
-    const response = await fetch(LEAK_OSINT_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: LEAK_OSINT_TOKEN,
-        request: number,
-        limit: 100,
-        lang: "en",
-      }),
-    });
+    try {
+      jwt.verify(token, JWT_SECRET);
 
-    const data = await response.json();
+      const sql = neon(process.env.DATABASE_URL);
 
-    /* 4️⃣ UPDATE CREDITS */
-    const remainingCredits = user.credits - 200;
+      await sql`
+        INSERT INTO equipment (
+          machineid,
+          name,
+          department,
+          installdate,
+          lastmaintdate,
+          maintinterval
+        )
+        VALUES (
+          ${machineId},
+          ${name},
+          ${department},
+          ${installDate},
+          ${lastMaintDate},
+          ${maintInterval}
+        )
+      `;
 
-    await sql`
-      UPDATE users
-      SET credits = ${remainingCredits}
-      WHERE username = ${username}
-    `;
+      return res.json({
+        success: true,
+        message: "Equipment added successfully",
+      });
 
-    /* 5️⃣ RESPONSE */
-    return res.status(200).json({
-      success: true,
-      message: "Scan successful",
-      data,
-      remainingCredits,
-    });
+    } catch (err) {
+      console.error(err);
 
-  } catch (error) {
-    console.error("ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "External API call failed",
-      error: error.message,
-    });
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
   }
+
+  return res.status(400).json({
+    success: false,
+    message: "Invalid action",
+  });
 }
