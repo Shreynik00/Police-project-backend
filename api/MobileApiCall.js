@@ -94,6 +94,53 @@ export default async function handler(req, res) {
         )
       `;
 
+      /* -------------------------------
+GET EQUIPMENT
+-------------------------------- */
+if (action === "getEquipment") {
+const { token } = req.body;
+
+if (!token) {
+return res.status(401).json({
+success: false,
+message: "Token missing",
+});
+}
+
+try {
+jwt.verify(token, JWT_SECRET);
+
+```
+const sql = neon(process.env.DATABASE_URL);
+
+const equipment = await sql`
+  SELECT
+    machineid,
+    name
+  FROM equipment
+  ORDER BY machineid
+`;
+
+return res.json({
+  success: true,
+  equipment,
+});
+```
+
+} catch (err) {
+console.error(err);
+
+```
+return res.status(500).json({
+  success: false,
+  message: err.message,
+});
+```
+
+}
+}
+
+
       return res.json({
         success: true,
         message: "Equipment added successfully",
