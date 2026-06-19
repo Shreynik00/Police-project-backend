@@ -94,11 +94,22 @@ export default async function handler(req, res) {
         )
       `;
 
-      /* -------------------------------
-GET EQUIPMENT
--------------------------------- */
 
-/* -------------------------------
+
+      return res.json({
+        success: true,
+        message: "Equipment added successfully",
+      });
+
+    } catch (err) {
+      console.error(err);
+
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+  }
    GET EQUIPMENT
 -------------------------------- */
 if (action === "getEquipment") {
@@ -138,21 +149,6 @@ if (action === "getEquipment") {
   }
 }
 
-
-      return res.json({
-        success: true,
-        message: "Equipment added successfully",
-      });
-
-    } catch (err) {
-      console.error(err);
-
-      return res.status(500).json({
-        success: false,
-        message: err.message,
-      });
-    }
-  }
 
   return res.status(400).json({
     success: false,
