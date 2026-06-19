@@ -111,7 +111,7 @@ export default async function handler(req, res) {
  
 
 if (action === "getEquipment") {
-  const { token ,machineid ,name} = req.body;
+  const { token ,machineId ,name} = req.body;
 
   if (!token) {
     return res.status(401).json({
