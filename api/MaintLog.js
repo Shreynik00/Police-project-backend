@@ -61,7 +61,7 @@ if (action === "getMaintenanceLogs") {
       SELECT
       *
       FROM maintenancelog WHERE machineid=${machineId} 
-      ORDER BY maintdate DESC
+     
     `;
 
     return res.json({
