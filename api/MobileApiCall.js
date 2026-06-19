@@ -97,47 +97,45 @@ export default async function handler(req, res) {
       /* -------------------------------
 GET EQUIPMENT
 -------------------------------- */
+
+/* -------------------------------
+   GET EQUIPMENT
+-------------------------------- */
 if (action === "getEquipment") {
-const { token } = req.body;
+  const { token } = req.body;
 
-if (!token) {
-return res.status(401).json({
-success: false,
-message: "Token missing",
-});
-}
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Token missing",
+    });
+  }
 
-try {
-jwt.verify(token, JWT_SECRET);
+  try {
+    jwt.verify(token, JWT_SECRET);
 
-```
-const sql = neon(process.env.DATABASE_URL);
+    const sql = neon(process.env.DATABASE_URL);
 
-const equipment = await sql`
-  SELECT
-    machineid,
-    name
-  FROM equipment
-  ORDER BY machineid
-`;
+    const equipment = await sql`
+      SELECT
+        machineid AS "machineId",
+        name
+      FROM equipment
+      ORDER BY machineid
+    `;
 
-return res.json({
-  success: true,
-  equipment,
-});
-```
+    return res.json({
+      success: true,
+      equipment,
+    });
+  } catch (err) {
+    console.error(err);
 
-} catch (err) {
-console.error(err);
-
-```
-return res.status(500).json({
-  success: false,
-  message: err.message,
-});
-```
-
-}
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
 }
 
 
