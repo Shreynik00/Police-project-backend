@@ -65,7 +65,7 @@ if (action === "getMaintenanceLogs") {
         performedby AS "performedBy",
         remarks,
         email
-      FROM maintenancelog WHERE machineid=${MachineId} AND name=${Equipment}
+      FROM maintenancelog WHERE machineid=${MachineId} 
       ORDER BY maintdate DESC
     `;
 
