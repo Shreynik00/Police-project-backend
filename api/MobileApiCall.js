@@ -49,9 +49,7 @@ export default async function handler(req, res) {
     }
   }
 
-  /* -------------------------------
-     ADD EQUIPMENT
-  -------------------------------- */
+
   if (action === "addEquipment") {
     const {
       token,
@@ -110,8 +108,8 @@ export default async function handler(req, res) {
       });
     }
   }
-   GET EQUIPMENT
--------------------------------- */
+ 
+
 if (action === "getEquipment") {
   const { token } = req.body;
 
