@@ -126,10 +126,9 @@ if (action === "getEquipment") {
     const sql = neon(process.env.DATABASE_URL);
 
     const equipment = await sql`
-      SELECT
-        machineid AS "machineId",
-        name
-      FROM equipment
+       SELECT
+      *
+      FROM equipment WHERE machineid = ${machineId} AND name = ${name}
       ORDER BY machineid
     `;
 
