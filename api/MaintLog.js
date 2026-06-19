@@ -50,7 +50,7 @@ export default async function handler(req, res) {
   }
 
 if (action === "getMaintenanceLogs") {
-  const { token ,machineId } = req.body;
+  const { token ,machineId ,Equipment} = req.body;
 
   try {
     jwt.verify(token, JWT_SECRET);
@@ -65,7 +65,7 @@ if (action === "getMaintenanceLogs") {
         performedby AS "performedBy",
         remarks,
         email
-      FROM maintenancelog WHERE machineid=${MachineId} 
+      FROM maintenancelog WHERE machineid=${MachineId} AND name=${Equipment}
       ORDER BY maintdate DESC
     `;
 
