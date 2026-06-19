@@ -59,13 +59,8 @@ if (action === "getMaintenanceLogs") {
 
     const logs = await sql`
       SELECT
-        logid AS "logId",
-        machineid AS "machineId",
-        maintdate AS "maintDate",
-        performedby AS "performedBy",
-        remarks,
-        email
-      FROM maintenancelog WHERE machineid=${MachineId} 
+      *
+      FROM maintenancelog WHERE machineid=${machineId} 
       ORDER BY maintdate DESC
     `;
 
