@@ -66,6 +66,52 @@ Maintenance Interval: ${machine.maintinterval}
       });
     }
   }
+  // QR for maintaince log
+  
+   if (action === "generateQRMaint") {
+    const { machineId } = req.body;
+
+    try {
+      const equipment = await sql`
+        SELECT *
+        FROM maintenancelog
+        WHERE machineid = ${machineId}
+      `;
+
+      if (equipment.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Machine not found",
+        });
+      }
+
+      const machine = equipment[0];
+
+      const qrText = `
+Machine ID: ${machine.machineid}
+Name: ${machine.maintdate}
+Department: ${machine.department}
+Install Date: ${machine.performedby}
+Last Maintenance: ${machine.email}
+Maintenance Interval: ${machine.remarks}
+`;
+
+      const qrCode = await QRCode.toDataURL(qrText);
+
+      return res.status(200).json({
+        success: true,
+        qrCode,
+      });
+
+    } catch (err) {
+      console.error(err);
+
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+  }
 
   return res.status(400).json({
     success: false,
