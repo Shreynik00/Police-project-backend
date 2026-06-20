@@ -1,9 +1,5 @@
-
 import { neon } from "@neondatabase/serverless";
 import QRCode from "qrcode";
-
-const EXTERNAL_API_URL =process.env.NEXT_PUBLIC_Experian_URL;
-const API_KEY = process.env.NEXT_PUBLIC_Experian_KEY; // move to env later
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -22,32 +18,30 @@ export default async function handler(req, res) {
     });
   }
 
+  const { action } = req.body;
+
   const sql = neon(process.env.DATABASE_URL);
 
- 
+  if (action === "generateQR") {
+    const { machineId } = req.body;
 
-if (action === "generateQR") {
-  const { machineId } = req.body;
+    try {
+      const equipment = await sql`
+        SELECT *
+        FROM equipment
+        WHERE machineid = ${machineId}
+      `;
 
-  try {
-    const sql = neon(process.env.DATABASE_URL);
+      if (equipment.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Machine not found",
+        });
+      }
 
-    const equipment = await sql`
-      SELECT *
-      FROM equipment
-      WHERE machineid = ${machineId}
-    `;
+      const machine = equipment[0];
 
-    if (equipment.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Machine not found",
-      });
-    }
-
-    const machine = equipment[0];
-
-    const qrText = `
+      const qrText = `
 Machine ID: ${machine.machineid}
 Name: ${machine.name}
 Department: ${machine.department}
@@ -56,18 +50,25 @@ Last Maintenance: ${machine.lastmaintdate}
 Maintenance Interval: ${machine.maintinterval}
 `;
 
-    const qrCode = await QRCode.toDataURL(qrText);
+      const qrCode = await QRCode.toDataURL(qrText);
 
-    return res.json({
-      success: true,
-      qrCode,
-    });
+      return res.status(200).json({
+        success: true,
+        qrCode,
+      });
 
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    } catch (err) {
+      console.error(err);
+
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
   }
-}
+
+  return res.status(400).json({
+    success: false,
+    message: "Invalid action",
+  });
 }
