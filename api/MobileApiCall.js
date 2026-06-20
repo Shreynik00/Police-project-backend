@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
   if (action === "deleteEquipment") {
   try {
-    const { machineId } = req.body;
+    const { machineIdToDelete } = req.body;
 
     if (!machineId) {
       return res.status(400).json({
