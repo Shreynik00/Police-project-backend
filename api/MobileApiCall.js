@@ -49,6 +49,35 @@ export default async function handler(req, res) {
     }
   }
 
+  if (action === "deleteEquipment") {
+  try {
+    const { machineId } = req.body;
+
+    if (!machineId) {
+      return res.status(400).json({
+        success: false,
+        message: "Machine ID required",
+      });
+    }
+
+    const result = await sql`
+      DELETE FROM equipment
+      WHERE machineid = ${machineId}
+    `;
+
+    return res.json({
+      success: true,
+      message: "Equipment Deleted Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+}
 
   if (action === "addEquipment") {
     const {
