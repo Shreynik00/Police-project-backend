@@ -53,7 +53,7 @@ export default async function handler(req, res) {
   try {
     const { machineIdToDelete } = req.body;
 
-    if (!machineId) {
+    if (!machineIdToDelete) {
       return res.status(400).json({
         success: false,
         message: "Machine ID required",
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
     const result = await sql`
       DELETE FROM equipment
-      WHERE machineid = ${machineId}
+      WHERE machineid = ${machineIdToDelete}
     `;
 
     return res.json({
