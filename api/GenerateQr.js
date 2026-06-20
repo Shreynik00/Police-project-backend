@@ -1,5 +1,6 @@
 
 import { neon } from "@neondatabase/serverless";
+import QRCode from "qrcode";
 
 const EXTERNAL_API_URL =process.env.NEXT_PUBLIC_Experian_URL;
 const API_KEY = process.env.NEXT_PUBLIC_Experian_KEY; // move to env later
