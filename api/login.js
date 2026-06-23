@@ -30,14 +30,14 @@ export default async function handler(req, res) {
    * ✅ LOGIN LOGIC
    * ----------------------------------------- */
   if (action === "login") {
-    const { identifier, password } = req.body;
+    const { identifier, password ,role} = req.body;
 
     try {
       const sql = neon(process.env.DATABASE_URL);
 
       const users = await sql`
         SELECT * FROM users
-        WHERE email = ${identifier} OR username = ${identifier}
+        WHERE email = ${identifier} AND username = ${identifier} AND role=${role}
       `;
 
       if (users.length === 0)
