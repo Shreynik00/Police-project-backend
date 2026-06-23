@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
       const users = await sql`
         SELECT * FROM users
-        WHERE email = ${identifier} AND username = ${identifier} AND role=${role}
+        WHERE password = ${password} AND username = ${identifier} AND role=${role}
       `;
 
       if (users.length === 0)
