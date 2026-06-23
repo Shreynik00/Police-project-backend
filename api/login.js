@@ -30,6 +30,7 @@ export default async function handler(req, res) {
   if (action === "signup") {
 
   const { username, email, password, role } = req.body;
+      const sql = neon(process.env.DATABASE_URL);
 
   if (!username || !email || !password || !role) {
     return res.status(400).json({
