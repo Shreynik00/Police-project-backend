@@ -26,6 +26,53 @@ export default async function handler(req, res) {
       message: "Missing action (login or scan)",
     });
 
+
+  if (action === "signup") {
+
+  const { username, email, password, role } = req.body;
+
+  if (!username || !email || !password || !role) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required"
+    });
+  }
+
+  const existingUser = await sql`
+    SELECT *
+    FROM Users
+    WHERE email = ${email}
+       OR username = ${username}
+  `;
+
+  if (existingUser.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: "User already exists"
+    });
+  }
+
+  await sql`
+    INSERT INTO Users (
+      username,
+      email,
+      password,
+      role
+    )
+    VALUES (
+      ${username},
+      ${email},
+      ${password},
+      ${role}
+    )
+  `;
+
+  return res.status(200).json({
+    success: true,
+    message: "Account Created Successfully"
+  });
+}
+  
   /* -----------------------------------------
    * ✅ LOGIN LOGIC
    * ----------------------------------------- */
