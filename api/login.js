@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 
   const existingUser = await sql`
     SELECT *
-    FROM Users
+    FROM users
     WHERE email = ${email}
        OR username = ${username}
   `;
